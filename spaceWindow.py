@@ -36,6 +36,16 @@ class SpaceWindow(arcade.Window):
             shot.center_x += 2
             if shot.center_x > WINDOW_WIDTH:
                 self.shots.remove(shot)
+        for rock in self.targets:
+            shots_hit = arcade.check_for_collision_with_list(rock, self.shots)
+            if shots_hit:
+                self.targets.remove(rock)
+                self.shots.remove(shots_hit[0])
+                new_rock  = arcade.Sprite(":resources:images/space_shooter/meteorGrey_med1.png")
+                new_rock.center_x = WINDOW_WIDTH+new_rock.width
+                new_rock.center_y = random.randint(0, WINDOW_HEIGHT)
+                self.targets.append(new_rock)
+
         if arcade.check_for_collision_with_list(self.player, self.targets):
             self.ouch = True
             arcade.play_sound(self.ouch_sound)
