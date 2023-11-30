@@ -16,6 +16,7 @@ class SpaceWindow(arcade.Window):
         self.ouch_sound = None
         self.music = None
         self.shots = arcade.SpriteList()
+        self.lose = False
 
     def setup(self):
         self.player = arcade.Sprite("Blue-05.png")
@@ -27,6 +28,8 @@ class SpaceWindow(arcade.Window):
         self.music = arcade.load_sound(":resources:music/funkyrobot.mp3")
 
     def on_update(self, delta_time: float):
+        if self.lose:
+            return
         self.move_player()
         for rock in self.targets:
             rock.center_x -= 1
@@ -50,6 +53,7 @@ class SpaceWindow(arcade.Window):
             self.ouch = True
             arcade.play_sound(self.ouch_sound)
             self.player.center_y = random.randint(self.player.height/2, WINDOW_HEIGHT)
+            self.lose = True
 
 
     def move_player(self):
@@ -75,11 +79,12 @@ class SpaceWindow(arcade.Window):
             new_shot.center_x = self.player.center_x+self.player.width
             self.shots.append(new_shot)
     def on_draw(self):
+
         arcade.start_render()
         self.player.draw()
         self.targets.draw()
         self.shots.draw()
-        if self.ouch:
+        if self.lose:
             losetext = arcade.Text("Ouch!", WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4, arcade.color.LIGHT_BLUE, 30)
             losetext.draw()
             self.ouch = False
